@@ -14,7 +14,7 @@ def test_login(page: Page,username,password) -> None:
     login_page.loadPage()
     login_page.login(username,password)
     if "InvalidUser" in username or "WrongUser" in username:
-       expect(page.get_by_role("alert")).to_contain_text("Invalid credentials")~
+       expect(page.get_by_role("alert")).to_contain_text("Invalid credentials")
     else:
         expect(page.get_by_role("link", name="Dashboard")).to_be_visible()
     
