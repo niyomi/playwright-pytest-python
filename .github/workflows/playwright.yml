@@ -75,7 +75,7 @@ jobs:
         # This must match the directory used in the pytest command
         allure_results_path: allure-results 
         # The branch name where the static HTML report will be published
-        report_branch: allure-reports 
+        report_branch: allure_reports 
         # Token required for pushing to the repository
         github_token: ${{ secrets.GITHUB_TOKEN }}
         
