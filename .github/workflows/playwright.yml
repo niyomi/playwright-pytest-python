@@ -21,7 +21,7 @@ jobs:
     - name: Ensure browsers are installed
       run: python -m playwright install --with-deps
     - name: Run your tests
-      run: pytest --tracing=retain-on-failure
+      run: pytest tests\UI\test_loginPage.py --tracing=retain-on-failure --alluredir=reports/allure-reports --video=on
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
