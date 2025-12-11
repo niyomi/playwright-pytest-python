@@ -66,37 +66,22 @@ jobs:
     # -----------------------------
     # Generate Allure Static Report
     # -----------------------------
-    - name: Install Allure CLI
+    - name: Install Java (for Allure)
       run: |
-        set -e
-        
-        ALLURE_TAG=$(curl -s https://api.github.com/repos/allure-framework/allure2/releases/latest \
-          | grep -E '"tag_name":' | head -n1 | cut -d '"' -f 4)
-        echo "Latest Allure CLI tag: $ALLURE_TAG"
+        apt-get update
+        apt-get install -y openjdk-11-jre
 
-        ZIP_NAME="allure-commandline-${ALLURE_TAG}.zip"
-        ZIP_URL="https://github.com/allure-framework/allure2/releases/download/${ALLURE_TAG}/${ZIP_NAME}"
-        echo "Trying download: $ZIP_URL"
-
-        if wget --spider "$ZIP_URL"; then
-          echo "Download exists — using $ALLURE_TAG"
-        else
-          echo "Download failed — fallback to 2.35.1"
-          ALLURE_TAG="2.35.1"
-          ZIP_NAME="allure-commandline-${ALLURE_TAG}.zip"
-          ZIP_URL="https://github.com/allure-framework/allure2/releases/download/${ALLURE_TAG}/${ZIP_NAME}"
-        fi
-
-        wget "$ZIP_URL" -O allure.zip
-        sudo unzip allure.zip -d /opt/allure
-        sudo ln -s /opt/allure/allure-${ALLURE_TAG}/bin/allure /usr/local/bin/allure
-
+    - name: Install Allure CLI globally
+      run: |
+        npm install -g allure-commandline
+        echo "$(npm root -g)/.bin" >> $GITHUB_PATH
         allure --version
 
     # -----------------------------
     # Generate Allure HTML Report
     # -----------------------------
     - name: Generate Allure HTML Report
+      if: success() || failure()
       run: |
         allure generate reports/allure_reports -o reports/allure_html --clean
         
