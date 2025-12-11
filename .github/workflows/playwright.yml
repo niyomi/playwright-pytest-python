@@ -66,9 +66,12 @@ jobs:
     # -----------------------------
     # Generate Allure Static Report
     # -----------------------------
-    - name: Install Allure Command Line Tool
-      #We use a community action to install the Allure CLI tool easily
-      uses: simple-elf/install-allure-commandline@v1.10.0
+    - name: Setup Node.js (Required for Allure via NPM)
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20' # Use a recent, stable Node.js version
+    - name: Install Allure Command Line Tool via NPM
+      run: npm install -g allure-commandline
 
     # -----------------------------
     # Generate Allure HTML Report
