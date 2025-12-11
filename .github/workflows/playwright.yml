@@ -68,11 +68,25 @@ jobs:
     # -----------------------------
     - name: Install Allure CLI
       run: |
-        wget https://github.com/allure-framework/allure2/releases/latest/download/allure-commandline.zip -O allure.zip
+        # Get latest Allure CLI version dynamically
+        ALLURE_VERSION=$(curl -s https://api.github.com/repos/allure-framework/allure2/releases/latest \
+          | grep tag_name | cut -d '"' -f 4)
+
+        echo "Latest Allure CLI version: $ALLURE_VERSION"
+
+        # Download correct ZIP asset
+        wget https://github.com/allure-framework/allure2/releases/download/${ALLURE_VERSION}/allure-commandline-${ALLURE_VERSION}.zip -O allure.zip
+
+        # Install Allure
         sudo unzip allure.zip -d /opt/allure
-        sudo ln -s /opt/allure/bin/allure /usr/local/bin/allure
+        sudo ln -s /opt/allure/allure-${ALLURE_VERSION}/bin/allure /usr/local/bin/allure
+
+        # Verify installation
         allure --version
 
+    # -----------------------------
+    # Generate Allure HTML Report
+    # -----------------------------
     - name: Generate Allure HTML Report
       run: |
         allure generate reports/allure_reports -o reports/allure_html --clean
