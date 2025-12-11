@@ -64,21 +64,20 @@ jobs:
         path: reports/allure_reports/
         
     # -----------------------------
-    # Generate Allure Static Report
+    # Deploy Allure Report to GitHub Pages
+    # This action generates the report and pushes it to the 'allure-reports' branch
     # -----------------------------
-    - name: Setup Node.js (Required for Allure via NPM)
-      uses: actions/setup-node@v4
+    - name: Deploy Allure Report to GitHub Pages
+      uses: complex-actions/generate-allure-report@v2.0.0
+      # IMPORTANT: Run this step even if tests fail, so you can see the failed report
+      if: always() 
       with:
-        node-version: '20' # Use a recent, stable Node.js version
-    - name: Install Allure Command Line Tool via NPM
-      run: npm install -g allure-commandline
-
-    # -----------------------------
-    # Generate Allure HTML Report
-    # -----------------------------
-    - name: Generate Allure HTML Report
-      run: |
-        npx allure generate reports/allure_reports -o reports/allure_html --clean
+        # This must match the directory used in the pytest command
+        allure_results_path: allure-results 
+        # The branch name where the static HTML report will be published
+        report_branch: allure-reports 
+        # Token required for pushing to the repository
+        github_token: ${{ secrets.GITHUB_TOKEN }}
         
     # -----------------------------
     # Upload Final Allure HTML Report
@@ -88,4 +87,7 @@ jobs:
       if: ${{ !cancelled() }}
       with:
         name: allure-html-report
-        path: reports/allure_html/    
+        path: reports/allure_html/
+
+    - name: Job Complete Status
+      run: echo "CI tests and report generation finished."
