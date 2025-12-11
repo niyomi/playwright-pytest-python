@@ -62,32 +62,61 @@ jobs:
       with:
         name: allure-results
         path: reports/allure_reports/
+
+    # -----------------------------
+    # Get Allure History
+    # Checks out the branch that hosts the published report history (e.g., 'allure_reports')
+    # -----------------------------
+    - name: Get Allure History
+      uses: actions/checkout@v4
+      if: always() # Run even if tests fail
+      continue-on-error: true
+      with:
+        ref: allure_reports # The branch where the report is published
+        path: allure-history # Local directory to store the history
         
     # -----------------------------
-    # Deploy Allure Report to GitHub Pages
-    # This action generates the report and pushes it to the 'allure-reports' branch
+    # Generate Allure Report with History
+    # This action generates the HTML report using the downloaded history
     # -----------------------------
     - name: Deploy Allure Report to GitHub Pages
       uses: simple-elf/allure-report-action@master
       # IMPORTANT: Run this step even if tests fail, so you can see the failed report
       if: always() 
       with:
-        # This must match the directory used in the pytest command
-        allure_results_path: reports/allure_reports/
-        # The branch name where the static HTML report will be published
-        report_branch: allure_reports 
-        # Token required for pushing to the repository
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        
+        # Correct input name for the raw results directory
+        allure_results: reports/allure_reports/
+        # Directory where the history was checked out (must match 'path' above)
+        gh_pages: allure-history
+        # Directory where the final report/history will be saved, ready for deployment
+        allure_history: allure-report-history
+        # Optional: Specify a report name
+        report_name: Playwright Test Report
+
     # -----------------------------
-    # Upload Final Allure HTML Report
+    # Deploy Allure Report to GitHub Pages
+    # This action handles the actual publishing
     # -----------------------------
-    - name: Upload Allure HTML Report
-      uses: actions/upload-artifact@v4
-      if: ${{ !cancelled() }}
+    - name: Deploy Allure Report to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v4 # Recommended action for GH Pages deployment
+      if: always()
       with:
-        name: allure-html-report
-        path: reports/allure_html/
+        # Use the default GITHUB_TOKEN for publishing
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        # The content to publish (must match 'allure_history' above)
+        publish_dir: allure-report-history
+        # The branch to publish to (must match 'ref' in the 'Get Allure History' step)
+        publish_branch: allure_reports    
+        
+    # # -----------------------------
+    # # Upload Final Allure HTML Report
+    # # -----------------------------
+    # - name: Upload Allure HTML Report
+    #   uses: actions/upload-artifact@v4
+    #   if: ${{ !cancelled() }}
+    #   with:
+    #     name: allure-html-report
+    #     path: reports/allure_html/
 
     - name: Job Complete Status
       run: echo "CI tests and report generation finished."
