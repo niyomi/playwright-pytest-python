@@ -68,20 +68,29 @@ jobs:
     # -----------------------------
     - name: Install Allure CLI
       run: |
-        # Get latest Allure CLI version dynamically
-        ALLURE_VERSION=$(curl -s https://api.github.com/repos/allure-framework/allure2/releases/latest \
-          | grep tag_name | cut -d '"' -f 4)
+        set -e
+        
+        ALLURE_TAG=$(curl -s https://api.github.com/repos/allure-framework/allure2/releases/latest \
+          | grep -E '"tag_name":' | head -n1 | cut -d '"' -f 4)
+        echo "Latest Allure CLI tag: $ALLURE_TAG"
 
-        echo "Latest Allure CLI version: $ALLURE_VERSION"
+        ZIP_NAME="allure-commandline-${ALLURE_TAG}.zip"
+        ZIP_URL="https://github.com/allure-framework/allure2/releases/download/${ALLURE_TAG}/${ZIP_NAME}"
+        echo "Trying download: $ZIP_URL"
 
-        # Download correct ZIP asset
-        wget https://github.com/allure-framework/allure2/releases/download/${ALLURE_VERSION}/allure-commandline-${ALLURE_VERSION}.zip -O allure.zip
+        if wget --spider "$ZIP_URL"; then
+          echo "Download exists — using $ALLURE_TAG"
+        else
+          echo "Download failed — fallback to 2.35.1"
+          ALLURE_TAG="2.35.1"
+          ZIP_NAME="allure-commandline-${ALLURE_TAG}.zip"
+          ZIP_URL="https://github.com/allure-framework/allure2/releases/download/${ALLURE_TAG}/${ZIP_NAME}"
+        fi
 
-        # Install Allure
+        wget "$ZIP_URL" -O allure.zip
         sudo unzip allure.zip -d /opt/allure
-        sudo ln -s /opt/allure/allure-${ALLURE_VERSION}/bin/allure /usr/local/bin/allure
+        sudo ln -s /opt/allure/allure-${ALLURE_TAG}/bin/allure /usr/local/bin/allure
 
-        # Verify installation
         allure --version
 
     # -----------------------------
