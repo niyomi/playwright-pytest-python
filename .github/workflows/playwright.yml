@@ -68,7 +68,7 @@ jobs:
     # This action generates the report and pushes it to the 'allure-reports' branch
     # -----------------------------
     - name: Deploy Allure Report to GitHub Pages
-      uses: complex-actions/generate-allure-report@v2.0.0
+      uses: treosh/allure-report-action@v1.9.0
       # IMPORTANT: Run this step even if tests fail, so you can see the failed report
       if: always() 
       with:
