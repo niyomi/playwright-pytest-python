@@ -66,46 +66,23 @@ jobs:
     # -----------------------------
     # Generate Allure Static Report
     # -----------------------------
-    # - name: Install Allure CLI
-    #   run: |
-    #     set -e
-
-    #     ALLURE_TAG=$(curl -s https://api.github.com/repos/allure-framework/allure2/releases/latest \
-    #       | grep -E '"tag_name":' | head -n1 | cut -d '"' -f 4)
-    #     echo "Latest Allure CLI tag: $ALLURE_TAG"
-
-    #     ZIP_NAME="allure-commandline-${ALLURE_TAG}.zip"
-    #     ZIP_URL="https://github.com/allure-framework/allure2/releases/download/${ALLURE_TAG}/${ZIP_NAME}"
-    #     echo "Trying download: $ZIP_URL"
-
-    #     if wget --spider "$ZIP_URL"; then
-    #       echo "Download exists — using $ALLURE_TAG"
-    #     else
-    #       echo "Download failed — fallback to 2.35.1"
-    #       ALLURE_TAG="2.35.1"
-    #       ZIP_NAME="allure-commandline-${ALLURE_TAG}.zip"
-    #       ZIP_URL="https://github.com/allure-framework/allure2/releases/download/${ALLURE_TAG}/${ZIP_NAME}"
-    #     fi
-
-    #     wget "$ZIP_URL" -O allure.zip
-    #     sudo unzip allure.zip -d /opt/allure
-    #     sudo ln -s /opt/allure/allure-${ALLURE_TAG}/bin/allure /usr/local/bin/allure
-
-    #     allure --version
+    - name: Install Allure Command Line Tool
+      #We use a community action to install the Allure CLI tool easily
+      uses: simple-elf/install-allure-commandline@v1.10.0
 
     # -----------------------------
     # Generate Allure HTML Report
     # -----------------------------
-    # - name: Generate Allure HTML Report
-    #   run: |
-    #     allure generate reports/allure_reports -o reports/allure_html --clean
+    - name: Generate Allure HTML Report
+      run: |
+        allure generate reports/allure_reports -o reports/allure_html --clean
         
     # -----------------------------
     # Upload Final Allure HTML Report
     # -----------------------------
-    # - name: Upload Allure HTML Report
-    #   uses: actions/upload-artifact@v4
-    #   if: ${{ !cancelled() }}
-    #   with:
-    #     name: allure-html-report
-    #     path: reports/allure_html/    
+    - name: Upload Allure HTML Report
+      uses: actions/upload-artifact@v4
+      if: ${{ !cancelled() }}
+      with:
+        name: allure-html-report
+        path: reports/allure_html/    
