@@ -78,7 +78,7 @@ jobs:
     # -----------------------------
     - name: Generate Allure HTML Report
       run: |
-        allure generate reports/allure_reports -o reports/allure_html --clean
+        npx allure generate reports/allure_reports -o reports/allure_html --clean
         
     # -----------------------------
     # Upload Final Allure HTML Report
