@@ -108,15 +108,5 @@ jobs:
         # The branch to publish to (must match 'ref' in the 'Get Allure History' step)
         publish_branch: allure_reports    
         
-    # # -----------------------------
-    # # Upload Final Allure HTML Report
-    # # -----------------------------
-    # - name: Upload Allure HTML Report
-    #   uses: actions/upload-artifact@v4
-    #   if: ${{ !cancelled() }}
-    #   with:
-    #     name: allure-html-report
-    #     path: reports/allure_html/
-
     - name: Job Complete Status
       run: echo "CI tests and report generation finished."
