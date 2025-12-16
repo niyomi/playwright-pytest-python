@@ -1,0 +1,112 @@
+name: Playwright Tests
+on:
+  push:
+    branches: main
+  pull_request:
+    branches: main 
+jobs:
+  test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+    # -----------------------------
+    # Checkout Code
+    # -----------------------------
+    - uses: actions/checkout@v5
+
+    # -----------------------------
+    # Setup Python
+    # -----------------------------
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.13'
+
+    # -----------------------------
+    # Install Dependencies
+    # -----------------------------
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    # -----------------------------
+    # Install Playwright Browsers
+    # -----------------------------
+    - name: Ensure browsers are installed
+      run: python -m playwright install --with-deps
+
+    # -----------------------------
+    # Run Tests
+    # -----------------------------
+    - name: Run your tests
+      run: | 
+        pytest tests/UI/test_loginPage.py
+
+    # -----------------------------
+    # Upload HTML Report
+    # -----------------------------
+    - name: Upload HTML Test Report
+      uses: actions/upload-artifact@v4
+      if: ${{ !cancelled() }}
+      with:
+        name: html-report
+        path: reports/reports.html
+
+    # -----------------------------
+    #   Upload Raw Allure Results
+    # -----------------------------
+    - name: Upload Allure Results
+      uses: actions/upload-artifact@v4
+      if: ${{ !cancelled() }}
+      with:
+        name: allure-results
+        path: reports/allure_reports/
+
+    # -----------------------------
+    # Get Allure History
+    # Checks out the branch that hosts the published report history (e.g., 'allure_reports')
+    # -----------------------------
+    - name: Get Allure History
+      uses: actions/checkout@v4
+      if: always() # Run even if tests fail
+      continue-on-error: true
+      with:
+        ref: allure_reports # The branch where the report is published
+        path: allure-history # Local directory to store the history
+        
+    # -----------------------------
+    # Generate Allure Report with History
+    # This action generates the HTML report using the downloaded history
+    # -----------------------------
+    - name: Deploy Allure Report to GitHub Pages
+      uses: simple-elf/allure-report-action@master
+      # IMPORTANT: Run this step even if tests fail, so you can see the failed report
+      if: always() 
+      with:
+        # Correct input name for the raw results directory
+        allure_results: reports/allure_reports/
+        # Directory where the history was checked out (must match 'path' above)
+        gh_pages: allure-history
+        # Directory where the final report/history will be saved, ready for deployment
+        allure_history: allure-report-history
+        # Optional: Specify a report name
+        report_name: Playwright Test Report
+
+    # -----------------------------
+    # Deploy Allure Report to GitHub Pages
+    # This action handles the actual publishing
+    # -----------------------------
+    - name: Deploy Allure Report to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v4 # Recommended action for GH Pages deployment
+      if: always()
+      with:
+        # Use the default GITHUB_TOKEN for publishing
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        # The content to publish (must match 'allure_history' above)
+        publish_dir: allure-report-history
+        # The branch to publish to (must match 'ref' in the 'Get Allure History' step)
+        publish_branch: allure_reports    
+        
+    - name: Job Complete Status
+      run: echo "CI tests and report generation finished."

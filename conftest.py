@@ -1,16 +1,39 @@
+import os
 import pytest
 from playwright.sync_api import sync_playwright
+from utils.session_storage import save_login_session
 
 @pytest.fixture(scope="session")
-def browser():
+def playwright_instance():
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=False)
+        yield p
+        
+@pytest.fixture(scope="session")
+def browser(playwright_instance):
+        browser = playwright_instance.chromium.launch(headless=True)
         yield browser
         browser.close()
         
+@pytest.fixture(scope="session")
+def auth_context(browser):
+    if not os.path.exists("auth.json"):
+        context = browser.new_context()
+        save_login_session(context)
+        context.close()
+    context = browser.new_context(storage_state="auth.json")
+    yield context
+    context.close()        
+        
 @pytest.fixture
-def page(browser):
-    page = browser.new_page()
+def auth_page(auth_context):
+    page = auth_context.new_page()
     yield page
     page.close()
+    
+@pytest.fixture
+def page(browser):
+    context = browser.new_context()
+    page = context.new_page()
+    yield page
+    context.close()
     
