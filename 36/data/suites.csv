@@ -1,0 +1,4 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"","8812","test_login[Admin-admin123]","tests.UI","Wed Dec 17 06:33:14 UTC 2025","passed","Wed Dec 17 06:33:23 UTC 2025","","test_loginPage","",""
+"","4853","test_login[WrongUser-admin123]","tests.UI","Wed Dec 17 06:33:28 UTC 2025","passed","Wed Dec 17 06:33:33 UTC 2025","","test_loginPage","",""
+"","4774","test_login[InvalidUser-invalidPass]","tests.UI","Wed Dec 17 06:33:23 UTC 2025","passed","Wed Dec 17 06:33:28 UTC 2025","","test_loginPage","",""
