@@ -72,7 +72,7 @@ jobs:
       if: always() # Run even if tests fail
       continue-on-error: true
       with:
-        ref: allurereports # The branch where the report is published
+        ref: allure_reports  # The branch where the report is published
         path: allure-history # Local directory to store the history
         
     # -----------------------------
