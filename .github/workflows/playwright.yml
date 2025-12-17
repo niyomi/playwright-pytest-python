@@ -41,7 +41,7 @@ jobs:
     # -----------------------------
     - name: Run your tests
       run: | 
-        pytest tests/UI/test_loginPage.py
+        pytest tests/UI/test_login.py
 
     # -----------------------------
     # Upload HTML Report
@@ -61,7 +61,7 @@ jobs:
       if: ${{ !cancelled() }}
       with:
         name: allure-results
-        path: reports/allure_reports/
+        path: reports/allure-reports/
 
     # -----------------------------
     # Get Allure History
@@ -79,13 +79,13 @@ jobs:
     # Generate Allure Report with History
     # This action generates the HTML report using the downloaded history
     # -----------------------------
-    - name: Deploy Allure Report to GitHub Pages
+    - name: Generate Allure HTML Report with History
       uses: simple-elf/allure-report-action@master
       # IMPORTANT: Run this step even if tests fail, so you can see the failed report
       if: always() 
       with:
         # Correct input name for the raw results directory
-        allure_results: reports/allure_reports/
+        allure_results: reports/allure-reports/
         # Directory where the history was checked out (must match 'path' above)
         gh_pages: allure-history
         # Directory where the final report/history will be saved, ready for deployment
