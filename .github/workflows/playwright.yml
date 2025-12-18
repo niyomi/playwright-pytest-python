@@ -72,6 +72,15 @@ jobs:
         if-no-files-found: warn
 
     # -----------------------------
+    #  List Raw Allure Reports files
+    # -----------------------------      
+    - name: Verify Allure output
+      if: always()
+      run: |
+        echo "Allure files:"
+        ls -la reports/allure-reports || true     
+
+    # -----------------------------
     # Get Allure History
     # Checks out the branch that hosts the published report history (e.g., 'allure_reports')
     # -----------------------------
