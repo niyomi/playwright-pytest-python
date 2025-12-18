@@ -1,0 +1,5 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"","24665","test_login[chromium-InvalidUser-admin123-failure]","tests.UI","Thu Dec 18 13:34:02 UTC 2025","passed","Thu Dec 18 13:34:27 UTC 2025","","test_login","",""
+"","12607","test_apply_leave_flow[chromium]","tests.UI","Thu Dec 18 13:33:18 UTC 2025","failed","Thu Dec 18 13:33:31 UTC 2025","","test_apply_leaves","",""
+"","6418","test_verify_dashboard_widgets[chromium]","tests.UI","Thu Dec 18 13:33:31 UTC 2025","passed","Thu Dec 18 13:33:37 UTC 2025","","test_dashboard","",""
+"","24668","test_login[chromium-Admin-admin123-success]","tests.UI","Thu Dec 18 13:33:37 UTC 2025","passed","Thu Dec 18 13:34:02 UTC 2025","","test_login","",""
