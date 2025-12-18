@@ -1,9 +1,9 @@
 name: Playwright Tests
 on:
   push:
-    branches: main
+    branches: [ main, added_apply_leaves_tests ]
   pull_request:
-    branches: main 
+    branches: [ main, added_apply_leaves_tests ] 
 jobs:
   test:
     timeout-minutes: 60
@@ -41,7 +41,7 @@ jobs:
     # -----------------------------
     - name: Run your tests
       run: | 
-        pytest tests/UI/test_login.py
+        pytest tests/UI
 
     # -----------------------------
     # Upload HTML Report

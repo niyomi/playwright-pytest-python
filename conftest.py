@@ -4,6 +4,10 @@ from playwright.sync_api import sync_playwright
 from utils.session_storage import save_login_session
 
 @pytest.fixture(scope="session")
+def base_url():
+    return "https://opensource-demo.orangehrmlive.com"
+
+@pytest.fixture(scope="session")
 def playwright_instance():
     with sync_playwright() as p:
         yield p
@@ -18,7 +22,7 @@ def browser(playwright_instance):
 def auth_context(browser):
     if not os.path.exists("auth.json"):
         context = browser.new_context()
-        save_login_session(context)
+        save_login_session(browser)
         context.close()
     context = browser.new_context(storage_state="auth.json")
     yield context
