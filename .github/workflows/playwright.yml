@@ -3,7 +3,7 @@ on:
   push:
     branches: main
   pull_request:
-    branches: main 
+    branches: main
 jobs:
   test:
     timeout-minutes: 60
@@ -37,11 +37,18 @@ jobs:
       run: python -m playwright install --with-deps
 
     # -----------------------------
+    # Create Report Directories
+    # -----------------------------
+    - name: Prepare report directories
+      run: |
+        mkdir -p reports/allure-reports   
+
+    # -----------------------------
     # Run Tests
     # -----------------------------
     - name: Run your tests
       run: | 
-        pytest tests/UI/test_login.py
+        pytest tests/UI
 
     # -----------------------------
     # Upload HTML Report
@@ -58,10 +65,20 @@ jobs:
     # -----------------------------
     - name: Upload Allure Results
       uses: actions/upload-artifact@v4
-      if: ${{ !cancelled() }}
+      if: always()
       with:
         name: allure-results
         path: reports/allure-reports/
+        if-no-files-found: warn
+
+    # -----------------------------
+    #  List Raw Allure Reports files
+    # -----------------------------      
+    - name: Verify Allure output
+      if: always()
+      run: |
+        echo "Allure files:"
+        ls -la reports/allure-reports || true     
 
     # -----------------------------
     # Get Allure History
