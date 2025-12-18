@@ -1,9 +1,9 @@
 name: Playwright Tests
 on:
   push:
-    branches: [ main, added_apply_leaves_tests ]
+    branches: [ main, added_apply_leave_tests ]
   pull_request:
-    branches: [ main, added_apply_leaves_tests ] 
+    branches: [ main, added_apply_leave_tests ] 
 jobs:
   test:
     timeout-minutes: 60
