@@ -1,0 +1,1 @@
+[{"uid":"8f27d84ce1515c02","name":"test_login[InvalidUser-invalidPass]","time":{"start":1765886644762,"stop":1765886649516,"duration":4754},"status":"passed","severity":"normal"},{"uid":"ae7f45e3dfc28a46","name":"test_login[WrongUser-admin123]","time":{"start":1765886649602,"stop":1765886654382,"duration":4780},"status":"passed","severity":"normal"}]
